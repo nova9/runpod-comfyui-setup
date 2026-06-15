@@ -5,13 +5,24 @@ don't have to SSH in and `wget` them by hand every time.
 
 ## Use it
 
-On a fresh pod (in the web terminal or over SSH):
+Repo: <https://github.com/nova9/runpod-comfyui-setup>
+
+On a fresh pod (in the web terminal or over SSH), clone and run — this gets
+both `setup.sh` and `models.txt`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/setup.sh | bash
+git clone https://github.com/nova9/runpod-comfyui-setup && cd runpod-comfyui-setup && ./setup.sh
+```
+
+Or the raw one-liner (only fetches `setup.sh`, so set `MODELS_MANIFEST` or it
+has nothing to download):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nova9/runpod-comfyui-setup/main/setup.sh | bash
 ```
 
 It will:
+
 1. Find your ComfyUI install (`/workspace/ComfyUI`, `/ComfyUI`, … — auto-detected).
 2. Install `aria2` if missing (fast multi-connection downloads).
 3. Prompt for your **Civitai** and **Hugging Face** tokens (cached at `~/.comfy-keys`, so it only asks once).
@@ -26,7 +37,7 @@ instead, or set `MODELS_MANIFEST=/path/to/models.txt`.
 
 Edit [`models.txt`](models.txt). One model per line, `|`-separated:
 
-```
+```text
 folder | filename | url
 ```
 
