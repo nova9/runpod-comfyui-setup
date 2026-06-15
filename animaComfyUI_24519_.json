@@ -1,0 +1,627 @@
+{
+  "id": "f7a250a1-53fb-496b-8c39-c60d9e764028",
+  "revision": 0,
+  "last_node_id": 58,
+  "last_link_id": 100,
+  "nodes": [
+    {
+      "id": 12,
+      "type": "CLIPTextEncode",
+      "pos": [
+        618.1071913813969,
+        244.7899165441417
+      ],
+      "size": [
+        534.9724235619389,
+        113.27148951094102
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 96
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            40
+          ]
+        }
+      ],
+      "title": "CLIP Text Encode (Negative Prompt)",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.3.65"
+      },
+      "widgets_values": [
+        "artist name, watermark, signature, score_1, score_2, score_3, jpeg artifacts, sepia, ye-pop, deviantart,"
+      ]
+    },
+    {
+      "id": 56,
+      "type": "Power Lora Loader (rgthree)",
+      "pos": [
+        267.88939687984765,
+        -1025.6900201334424
+      ],
+      "size": [
+        340.519921875,
+        262
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "model",
+          "type": "MODEL",
+          "link": 99
+        },
+        {
+          "dir": 3,
+          "name": "clip",
+          "type": "CLIP",
+          "link": 97
+        }
+      ],
+      "outputs": [
+        {
+          "dir": 4,
+          "name": "MODEL",
+          "shape": 3,
+          "type": "MODEL",
+          "links": [
+            100
+          ]
+        },
+        {
+          "dir": 4,
+          "name": "CLIP",
+          "shape": 3,
+          "type": "CLIP",
+          "links": [
+            98
+          ]
+        }
+      ],
+      "properties": {
+        "Show Strengths": "Single Strength",
+        "Match": ""
+      },
+      "widgets_values": [
+        {},
+        {
+          "type": "PowerLoraLoaderHeaderWidget"
+        },
+        {
+          "on": true,
+          "lora": "TestingAnima\\GothicNeonAnima.safetensors",
+          "strength": 1,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "LoveByMistakeManhwaAnima.safetensors",
+          "strength": 0.6,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "notmine\\imomonono_anima-000014.safetensors",
+          "strength": 0.7,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "OC\\FVixAnima.safetensors",
+          "strength": 0.7,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "notmine\\Style_soph-Frugit-ANIMA3P.safetensors",
+          "strength": 0.4,
+          "strengthTwo": null
+        },
+        {
+          "on": false,
+          "lora": "notmine\\garf_anima_4-000008.safetensors",
+          "strength": 0.8,
+          "strengthTwo": null
+        },
+        {},
+        ""
+      ]
+    },
+    {
+      "id": 11,
+      "type": "CLIPTextEncode",
+      "pos": [
+        904.8123224519841,
+        -355.44700406862785
+      ],
+      "size": [
+        543.5120797468438,
+        293.0990356686963
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 98
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            39
+          ]
+        }
+      ],
+      "title": "CLIP Text Encode (Positive Prompt)",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode",
+        "cnr_id": "comfy-core",
+        "ver": "0.3.65"
+      },
+      "widgets_values": [
+        "absurdres, masterpiece, score_7, score_8, g0thic n30n, neon lights, 1girl, weapon, sword, rain, holding, long hair, solo, blue eyes, holding weapon, holding sword, katana, ponytail, white hair, night, sneakers, looking at viewer, water drop, jacket, water, shoes, building, long sleeves, outdoors, dual wielding, bangs, closed mouth, reflection, white jacket, city"
+      ]
+    },
+    {
+      "id": 19,
+      "type": "KSampler",
+      "pos": [
+        1677.8411422071058,
+        52.7346781973157
+      ],
+      "size": [
+        284.0479888363652,
+        458.99351420107223
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 100
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 39
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 40
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 85
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler",
+        "cnr_id": "comfy-core",
+        "ver": "0.3.40"
+      },
+      "widgets_values": [
+        105516783334447,
+        "randomize",
+        30,
+        4,
+        "er_sde",
+        "simple",
+        1
+      ]
+    },
+    {
+      "id": 48,
+      "type": "SDXL Empty Latent Image (rgthree)",
+      "pos": [
+        287.50661467481115,
+        -97.93825860046968
+      ],
+      "size": [
+        333.4634765625,
+        146
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            85
+          ]
+        },
+        {
+          "name": "CLIP_WIDTH",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "CLIP_HEIGHT",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SDXL Empty Latent Image (rgthree)",
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931"
+      },
+      "widgets_values": [
+        " 896 x 1152  (portrait)",
+        2,
+        2
+      ]
+    },
+    {
+      "id": 15,
+      "type": "VAELoader",
+      "pos": [
+        1323.7738122375567,
+        757.2193497359149
+      ],
+      "size": [
+        270,
+        58
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.3.40"
+      },
+      "widgets_values": [
+        "qwen_image_vae.safetensors"
+      ]
+    },
+    {
+      "id": 55,
+      "type": "PreviewImage",
+      "pos": [
+        2779.985903877261,
+        386.0675691630574
+      ],
+      "size": [
+        1039.5554809570312,
+        959.7778076171875
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 93
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.19.5"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 51,
+      "type": "Save Image (LoraManager)",
+      "pos": [
+        2419.31931057298,
+        1047.5365870048422
+      ],
+      "size": [
+        262.08614788188515,
+        438
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 94
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Save Image (LoraManager)",
+        "cnr_id": "comfyui-lora-manager",
+        "ver": "1.0.6"
+      },
+      "widgets_values": [
+        "animaComfyUI",
+        "png",
+        false,
+        100,
+        true,
+        true,
+        true,
+        false
+      ]
+    },
+    {
+      "id": 44,
+      "type": "UNETLoader",
+      "pos": [
+        -524.3412996587315,
+        -432.115121844285
+      ],
+      "size": [
+        307.5999755859375,
+        82
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            99
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.11.0"
+      },
+      "widgets_values": [
+        "anima_baseV10.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 46,
+      "type": "CLIPLoader",
+      "pos": [
+        -435.0807774046852,
+        -27.751760037969568
+      ],
+      "size": [
+        270,
+        106
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            96,
+            97
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "cnr_id": "comfy-core",
+        "ver": "0.19.5"
+      },
+      "widgets_values": [
+        "qwen_3_06b_base.safetensors",
+        "stable_diffusion",
+        "default"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        2221.02836150555,
+        532.130132009573
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 10
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            93,
+            94
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode",
+        "cnr_id": "comfy-core",
+        "ver": "0.3.40"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      10,
+      19,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      11,
+      15,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      39,
+      11,
+      0,
+      19,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      40,
+      12,
+      0,
+      19,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      85,
+      48,
+      0,
+      19,
+      3,
+      "LATENT"
+    ],
+    [
+      93,
+      8,
+      0,
+      55,
+      0,
+      "IMAGE"
+    ],
+    [
+      94,
+      8,
+      0,
+      51,
+      0,
+      "IMAGE"
+    ],
+    [
+      96,
+      46,
+      0,
+      12,
+      0,
+      "CLIP"
+    ],
+    [
+      97,
+      46,
+      0,
+      56,
+      1,
+      "CLIP"
+    ],
+    [
+      98,
+      56,
+      1,
+      11,
+      0,
+      "CLIP"
+    ],
+    [
+      99,
+      44,
+      0,
+      56,
+      0,
+      "MODEL"
+    ],
+    [
+      100,
+      56,
+      0,
+      19,
+      0,
+      "MODEL"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.2853116706110006,
+      "offset": [
+        2671.6367348472304,
+        2036.5881102761093
+      ]
+    },
+    "workflowRendererVersion": "LG",
+    "frontendVersion": "1.45.15",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
