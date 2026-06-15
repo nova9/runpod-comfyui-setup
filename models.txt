@@ -7,21 +7,21 @@
 # Lines starting with # and blank lines are ignored.
 
 # ---------- Checkpoints ----------
-checkpoints | cyberrealistic_v90.safetensors        | https://civitai.com/api/download/models/2575945?type=Model&format=SafeTensor&size=pruned&fp=fp16
-checkpoints | cyberrealistic_v100.safetensors       | https://civitai.red/api/download/models/2840768?type=Model&format=SafeTensor&size=pruned&fp=fp16
-checkpoints | perfectionRealisticILXL_52.safetensors | https://civitai.com/api/download/models/2529275?type=Model&format=SafeTensor&size=pruned&fp=fp16
-checkpoints | pornmasterZImage_v01.safetensors      | https://civitai.com/api/download/models/2555568?type=Model&format=SafeTensor&size=pruned&fp=fp8
-checkpoints | epicrealismXL_pureFix.safetensors     | https://civitai.com/api/download/models/2514955?type=Model&format=SafeTensor&size=pruned&fp=fp16
-checkpoints | perfectdeliberate_v60.safetensors     | https://civitai.com/api/download/models/2555278?type=Model&format=SafeTensor&size=pruned&fp=fp16
-checkpoints | realisticFreedom_omegaSDXL.safetensors | https://civitai.com/api/download/models/1461059?type=Model&format=SafeTensor&size=full&fp=fp16
-checkpoints | ponyRealism.safetensors               | https://civitai.red/api/download/models/914390?fileId=822476
-checkpoints | ponyRealism_stableYogi.safetensors    | https://civitai.red/api/download/models/2985392?fileId=2864951
+# checkpoints | cyberrealistic_v90.safetensors        | https://civitai.com/api/download/models/2575945?type=Model&format=SafeTensor&size=pruned&fp=fp16
+# checkpoints | cyberrealistic_v100.safetensors       | https://civitai.red/api/download/models/2840768?type=Model&format=SafeTensor&size=pruned&fp=fp16
+# checkpoints | perfectionRealisticILXL_52.safetensors | https://civitai.com/api/download/models/2529275?type=Model&format=SafeTensor&size=pruned&fp=fp16
+# checkpoints | pornmasterZImage_v01.safetensors      | https://civitai.com/api/download/models/2555568?type=Model&format=SafeTensor&size=pruned&fp=fp8
+# checkpoints | epicrealismXL_pureFix.safetensors     | https://civitai.com/api/download/models/2514955?type=Model&format=SafeTensor&size=pruned&fp=fp16
+# checkpoints | perfectdeliberate_v60.safetensors     | https://civitai.com/api/download/models/2555278?type=Model&format=SafeTensor&size=pruned&fp=fp16
+# checkpoints | realisticFreedom_omegaSDXL.safetensors | https://civitai.com/api/download/models/1461059?type=Model&format=SafeTensor&size=full&fp=fp16
+# checkpoints | ponyRealism.safetensors               | https://civitai.red/api/download/models/914390?fileId=822476
+# checkpoints | ponyRealism_stableYogi.safetensors    | https://civitai.red/api/download/models/2985392?fileId=2864951
 
 # ---------- LoRAs ----------
-loras | Threesome_Sandwich.safetensors | https://civitai.com/api/download/models/347804?type=Model&format=SafeTensor
-loras | Fefa_Mix.safetensors           | https://civitai.com/api/download/models/321533?type=Model&format=SafeTensor&size=pruned&fp=fp16
-loras | Micro_Bikini.safetensors       | https://civitai.com/api/download/models/322325?type=Model&format=SafeTensor
-loras | Miss_Fortune_Classic_LoL.safetensors | https://civitai.com/api/download/models/330380?type=Model&format=SafeTensor
+#loras | Threesome_Sandwich.safetensors | https://civitai.com/api/download/models/347804?type=Model&format=SafeTensor
+#loras | Fefa_Mix.safetensors           | https://civitai.com/api/download/models/321533?type=Model&format=SafeTensor&size=pruned&fp=fp16
+#loras | Micro_Bikini.safetensors       | https://civitai.com/api/download/models/322325?type=Model&format=SafeTensor
+#loras | Miss_Fortune_Classic_LoL.safetensors | https://civitai.com/api/download/models/330380?type=Model&format=SafeTensor
 
 # ---------- Upscalers ----------
 upscale_models | RealESRGAN_x4Plus_Anime_6B.pth | https://civitai.com/api/download/models/164904?type=Model&format=PickleTensor
@@ -31,3 +31,6 @@ upscale_models | RealESRGAN_x4Plus_Anime_6B.pth | https://civitai.com/api/downlo
 diffusion_models | anima_baseV10.safetensors    | https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/diffusion_models/anima-base-v1.0.safetensors
 text_encoders    | qwen_3_06b_base.safetensors  | https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/text_encoders/qwen_3_06b_base.safetensors
 vae              | qwen_image_vae.safetensors   | https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/vae/qwen_image_vae.safetensors
+
+# Vixon's Anima/Pony Styles - Gothic Neon (LoRA)
+loras            | GothicNeonAnima.safetensors  | https://civitai.com/api/download/models/3022620?fileId=2901399
