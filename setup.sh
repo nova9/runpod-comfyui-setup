@@ -17,6 +17,8 @@ set -euo pipefail
 # ----------------------------------------------------------------------------
 COMFYUI_DIR="${COMFYUI_DIR:-}"          # auto-detected if empty
 MODELS_MANIFEST="${MODELS_MANIFEST:-}"  # defaults to models.txt next to this script
+# When run via `curl | bash` there's no local models.txt, so fetch it from here.
+MANIFEST_URL="${MANIFEST_URL:-https://raw.githubusercontent.com/nova9/runpod-comfyui-setup/main/models.txt}"
 KEYS_FILE="${KEYS_FILE:-$HOME/.comfy-keys}"  # cached keys, lives OUTSIDE the repo
 
 c_blue='\033[1;34m'; c_green='\033[1;32m'; c_yellow='\033[1;33m'; c_red='\033[1;31m'; c_off='\033[0m'
@@ -32,14 +34,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo
 # ----------------------------------------------------------------------------
 find_comfyui() {
   [ -n "$COMFYUI_DIR" ] && { [ -d "$COMFYUI_DIR/models" ] || die "No models/ in $COMFYUI_DIR"; ok "ComfyUI: $COMFYUI_DIR"; return; }
-  local c
-  for c in /workspace/ComfyUI /ComfyUI /root/ComfyUI "$HOME/ComfyUI" /workspace/madapps/ComfyUI; do
+  local c root
+  for c in /workspace/ComfyUI /workspace/runpod-slim/ComfyUI /ComfyUI /root/ComfyUI \
+           "$HOME/ComfyUI" /workspace/madapps/ComfyUI /opt/ComfyUI /app/ComfyUI; do
     [ -d "$c/models" ] && { COMFYUI_DIR="$c"; ok "Found ComfyUI: $c"; return; }
   done
-  # Last resort: search common roots.
-  c="$(find /workspace / -maxdepth 4 -type d -name models -path '*ComfyUI*' 2>/dev/null | head -1)"
-  [ -n "$c" ] && { COMFYUI_DIR="$(dirname "$c")"; ok "Found ComfyUI: $COMFYUI_DIR"; return; }
-  die "Could not find ComfyUI. Set it explicitly: COMFYUI_DIR=/path/to/ComfyUI ./setup.sh"
+  # Deeper search of likely roots. `|| true` keeps SIGPIPE from head -1 (with
+  # pipefail) from aborting the whole script under set -e.
+  log "Searching for ComfyUI…"
+  for root in /workspace /root /opt /app /home /; do
+    [ -d "$root" ] || continue
+    c="$(find "$root" -maxdepth 4 -type d -name models -path '*ComfyUI*' 2>/dev/null | head -1 || true)"
+    [ -n "$c" ] && [ -d "$c" ] && { COMFYUI_DIR="$(dirname "$c")"; ok "Found ComfyUI: $COMFYUI_DIR"; return; }
+    [ "$root" = / ] && break  # don't scan all of / twice
+  done
+  die "Could not find ComfyUI. Re-run with the path:  COMFYUI_DIR=/path/to/ComfyUI bash setup.sh"
 }
 
 # ----------------------------------------------------------------------------
@@ -59,13 +68,18 @@ load_keys() {
   [ -f "$KEYS_FILE" ] && source "$KEYS_FILE"
   CIVITAI_TOKEN="${CIVITAI_TOKEN:-}"; HF_TOKEN="${HF_TOKEN:-}"
 
+  # Where to read interactive input. Under `curl | bash`, stdin is the script
+  # pipe, so prompt from the controlling terminal instead.
+  local src=""
+  if [ -r /dev/tty ]; then src=/dev/tty; elif [ -t 0 ]; then src=/dev/stdin; fi
+
   if [ -z "$CIVITAI_TOKEN" ]; then
-    if [ -t 0 ]; then read -rsp "$(echo -e "${c_yellow}?${c_off}") Civitai API token (Enter to skip): " CIVITAI_TOKEN; echo
-    else warn "No TTY / no CIVITAI_TOKEN — Civitai downloads will be skipped"; fi
+    if [ -n "$src" ]; then read -rsp "$(echo -e "${c_yellow}?${c_off}") Civitai API token (Enter to skip): " CIVITAI_TOKEN < "$src"; echo
+    else warn "No terminal / no CIVITAI_TOKEN — Civitai downloads will be skipped"; fi
   fi
   if [ -z "$HF_TOKEN" ]; then
-    if [ -t 0 ]; then read -rsp "$(echo -e "${c_yellow}?${c_off}") Hugging Face token (Enter to skip): " HF_TOKEN; echo
-    else warn "No TTY / no HF_TOKEN — gated HF downloads may fail"; fi
+    if [ -n "$src" ]; then read -rsp "$(echo -e "${c_yellow}?${c_off}") Hugging Face token (Enter to skip): " HF_TOKEN < "$src"; echo
+    else warn "No terminal / no HF_TOKEN — gated HF downloads may fail"; fi
   fi
 
   umask 077
@@ -79,6 +93,9 @@ load_keys() {
 resolve_manifest() {
   [ -n "$MODELS_MANIFEST" ] && [ -f "$MODELS_MANIFEST" ] && { echo "$MODELS_MANIFEST"; return; }
   [ -f "$SCRIPT_DIR/models.txt" ] && { echo "$SCRIPT_DIR/models.txt"; return; }
+  # No local manifest (running via curl|bash): fetch it from the repo.
+  local tmp="${TMPDIR:-/tmp}/comfy-models.txt"
+  curl -fsSL "$MANIFEST_URL" -o "$tmp" 2>/dev/null && [ -s "$tmp" ] && { echo "$tmp"; return; }
   echo ""
 }
 
