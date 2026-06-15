@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-SCRIPT_VERSION="2026-06-15.3"   # bump on changes so we can confirm which copy ran
+SCRIPT_VERSION="2026-06-15.4"   # bump on changes so we can confirm which copy ran
 # DEBUG=1 turns on bash xtrace for full step-by-step output.
 [ "${DEBUG:-0}" = "1" ] && set -x
 dbg() { echo -e "\033[0;90m[debug] $*\033[0m"; }
@@ -129,12 +129,16 @@ download_one() {
   else warn "FAILED: $folder/$filename"; rm -f "$dest"; fi  # drop partial so re-run retries
 }
 
+# Strip leading/trailing whitespace without invoking xargs (which mangles
+# quotes/apostrophes, e.g. "Vixon's").
+trim() { local s="$1"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]]}"}"; printf '%s' "$s"; }
+
 download_models() {
   local manifest; manifest="$(resolve_manifest)"
   [ -z "$manifest" ] && die "No models.txt found next to setup.sh (or set MODELS_MANIFEST)"
   log "Manifest: $manifest"
   while IFS='|' read -r folder filename url || [ -n "$folder" ]; do
-    folder="$(echo "$folder" | xargs)"; filename="$(echo "$filename" | xargs)"; url="$(echo "$url" | xargs)"
+    folder="$(trim "$folder")"; filename="$(trim "$filename")"; url="$(trim "$url")"
     [ -z "$folder" ] && continue
     [[ "$folder" == \#* ]] && continue
     [ -z "$url" ] && { warn "bad line (no url): $folder $filename"; continue; }
