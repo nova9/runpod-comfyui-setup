@@ -62,10 +62,13 @@ find_comfyui() {
 # 2. aria2 (fast multi-connection downloader)
 # ----------------------------------------------------------------------------
 ensure_aria2() {
-  command -v aria2c >/dev/null && return
-  log "Installing aria2"
-  if command -v apt-get >/dev/null; then apt-get update -qq && apt-get install -y -qq aria2
-  else die "aria2c missing and apt-get unavailable — install aria2 manually"; fi
+  local -a missing=()
+  command -v aria2c >/dev/null || missing+=(aria2)
+  command -v wget   >/dev/null || missing+=(wget)
+  [ ${#missing[@]} -eq 0 ] && return
+  log "Installing ${missing[*]}"
+  if command -v apt-get >/dev/null; then apt-get update -qq && apt-get install -y -qq "${missing[@]}"
+  else die "missing ${missing[*]} and apt-get unavailable — install manually"; fi
 }
 
 # ----------------------------------------------------------------------------
@@ -113,21 +116,22 @@ download_one() {
   mkdir -p "$dest_dir"
   [ -s "$dest" ] && { ok "exists: $folder/$filename"; return; }
 
-  local -a args=(--console-log-level=warn -k1M --continue=true
-                 --auto-file-renaming=false --allow-overwrite=true
-                 -d "$dest_dir" -o "$filename")
-
   if [[ "$url" == *civitai.com* || "$url" == *civitai.red* ]]; then
     [ -z "$CIVITAI_TOKEN" ] && { warn "skip (no Civitai token): $filename"; return; }
     if [[ "$url" == *\?* ]]; then url="${url}&token=${CIVITAI_TOKEN}"; else url="${url}?token=${CIVITAI_TOKEN}"; fi
-    # Civitai's signed b2 URLs are single-shot — parallel range requests 403.
-    # One connection only (still resumable). Slower, but it actually works.
-    args+=(-x1 -s1 --max-connection-per-server=1)
-  else
-    args+=(-x16 -s16)
-    if [[ "$url" == *huggingface.co* ]] && [ -n "$HF_TOKEN" ]; then
-      args+=(--header="Authorization: Bearer ${HF_TOKEN}")
-    fi
+    # aria2 chokes on Civitai's signed b2 redirect (errorCode=22 / 403). wget
+    # follows the redirect cleanly with a single connection and resumes via -c.
+    log "downloading $folder/$filename"
+    if wget --continue --tries=3 --timeout=60 -O "$dest" "$url"; then ok "done: $folder/$filename"
+    else warn "FAILED: $folder/$filename"; rm -f "$dest"; fi  # drop partial so re-run retries
+    return
+  fi
+
+  local -a args=(--console-log-level=warn -k1M --continue=true
+                 --auto-file-renaming=false --allow-overwrite=true
+                 -d "$dest_dir" -o "$filename" -x16 -s16)
+  if [[ "$url" == *huggingface.co* ]] && [ -n "$HF_TOKEN" ]; then
+    args+=(--header="Authorization: Bearer ${HF_TOKEN}")
   fi
 
   log "downloading $folder/$filename"
