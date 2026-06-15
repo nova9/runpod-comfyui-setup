@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-SCRIPT_VERSION="2026-06-15.4"   # bump on changes so we can confirm which copy ran
+SCRIPT_VERSION="2026-06-15.5"   # bump on changes so we can confirm which copy ran
 # DEBUG=1 turns on bash xtrace for full step-by-step output.
 [ "${DEBUG:-0}" = "1" ] && set -x
 dbg() { echo -e "\033[0;90m[debug] $*\033[0m"; }
@@ -113,15 +113,21 @@ download_one() {
   mkdir -p "$dest_dir"
   [ -s "$dest" ] && { ok "exists: $folder/$filename"; return; }
 
-  local -a args=(--console-log-level=warn -x16 -s16 -k1M --continue=true
+  local -a args=(--console-log-level=warn -k1M --continue=true
                  --auto-file-renaming=false --allow-overwrite=true
                  -d "$dest_dir" -o "$filename")
 
   if [[ "$url" == *civitai.com* || "$url" == *civitai.red* ]]; then
     [ -z "$CIVITAI_TOKEN" ] && { warn "skip (no Civitai token): $filename"; return; }
     if [[ "$url" == *\?* ]]; then url="${url}&token=${CIVITAI_TOKEN}"; else url="${url}?token=${CIVITAI_TOKEN}"; fi
-  elif [[ "$url" == *huggingface.co* ]] && [ -n "$HF_TOKEN" ]; then
-    args+=(--header="Authorization: Bearer ${HF_TOKEN}")
+    # Civitai's signed b2 URLs are single-shot — parallel range requests 403.
+    # One connection only (still resumable). Slower, but it actually works.
+    args+=(-x1 -s1 --max-connection-per-server=1)
+  else
+    args+=(-x16 -s16)
+    if [[ "$url" == *huggingface.co* ]] && [ -n "$HF_TOKEN" ]; then
+      args+=(--header="Authorization: Bearer ${HF_TOKEN}")
+    fi
   fi
 
   log "downloading $folder/$filename"
