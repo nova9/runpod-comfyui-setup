@@ -59,9 +59,9 @@ find_comfyui() {
 }
 
 # ----------------------------------------------------------------------------
-# 2. aria2 (fast multi-connection downloader)
+# 2. downloaders (aria2 for HF/multi-connection, wget for Civitai redirects)
 # ----------------------------------------------------------------------------
-ensure_aria2() {
+ensure_downloaders() {
   local -a missing=()
   command -v aria2c >/dev/null || missing+=(aria2)
   command -v wget   >/dev/null || missing+=(wget)
@@ -161,7 +161,7 @@ main() {
   echo -e "${c_green}ComfyUI model fetcher${c_off}  (version $SCRIPT_VERSION)"
   dbg "bash=$BASH_VERSION  pwd=$PWD  stdin-tty=$([ -t 0 ] && echo yes || echo no)  /dev/tty=$([ -r /dev/tty ] && echo readable || echo no)"
   dbg "step: find_comfyui";  find_comfyui
-  dbg "step: ensure_aria2";  ensure_aria2
+  dbg "step: ensure_downloaders";  ensure_downloaders
   dbg "step: load_keys";     load_keys
   dbg "step: download_models"; download_models
   log "Done. Restart ComfyUI (or use Manager → Refresh) to pick up new models."
