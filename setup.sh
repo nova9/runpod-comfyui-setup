@@ -12,6 +12,11 @@
 
 set -euo pipefail
 
+SCRIPT_VERSION="2026-06-15.3"   # bump on changes so we can confirm which copy ran
+# DEBUG=1 turns on bash xtrace for full step-by-step output.
+[ "${DEBUG:-0}" = "1" ] && set -x
+dbg() { echo -e "\033[0;90m[debug] $*\033[0m"; }
+
 # ----------------------------------------------------------------------------
 # Config (override with env vars, e.g. COMFYUI_DIR=/ComfyUI ./setup.sh)
 # ----------------------------------------------------------------------------
@@ -33,10 +38,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo
 # 1. Locate the existing ComfyUI install
 # ----------------------------------------------------------------------------
 find_comfyui() {
+  dbg "find_comfyui: COMFYUI_DIR='${COMFYUI_DIR}'"
   [ -n "$COMFYUI_DIR" ] && { [ -d "$COMFYUI_DIR/models" ] || die "No models/ in $COMFYUI_DIR"; ok "ComfyUI: $COMFYUI_DIR"; return; }
   local c root
   for c in /workspace/ComfyUI /workspace/runpod-slim/ComfyUI /ComfyUI /root/ComfyUI \
            "$HOME/ComfyUI" /workspace/madapps/ComfyUI /opt/ComfyUI /app/ComfyUI; do
+    dbg "checking $c/models"
     [ -d "$c/models" ] && { COMFYUI_DIR="$c"; ok "Found ComfyUI: $c"; return; }
   done
   # Deeper search of likely roots. `|| true` keeps SIGPIPE from head -1 (with
@@ -137,11 +144,12 @@ download_models() {
 }
 
 main() {
-  echo -e "${c_green}ComfyUI model fetcher${c_off}"
-  find_comfyui
-  ensure_aria2
-  load_keys
-  download_models
+  echo -e "${c_green}ComfyUI model fetcher${c_off}  (version $SCRIPT_VERSION)"
+  dbg "bash=$BASH_VERSION  pwd=$PWD  stdin-tty=$([ -t 0 ] && echo yes || echo no)  /dev/tty=$([ -r /dev/tty ] && echo readable || echo no)"
+  dbg "step: find_comfyui";  find_comfyui
+  dbg "step: ensure_aria2";  ensure_aria2
+  dbg "step: load_keys";     load_keys
+  dbg "step: download_models"; download_models
   log "Done. Restart ComfyUI (or use Manager → Refresh) to pick up new models."
 }
 
