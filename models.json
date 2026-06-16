@@ -1,0 +1,156 @@
+{
+  "_comment": "ComfyUI model manifest. folder = subfolder under ComfyUI/models/. url has NO token (added by setup.sh). Set enabled:false to skip a model.",
+  "models": [
+    {
+      "section": "FireRed Image Edit",
+      "folder": "diffusion_models",
+      "filename": "FireRed-Image-Edit-1.0-Lightning-8steps-v1.0.safetensors",
+      "url": "https://huggingface.co/FireRedTeam/FireRed-Image-Edit-1.0-ComfyUI/resolve/main/FireRed-Image-Edit-1.0-Lightning-8steps-v1.0.safetensors",
+      "enabled": true
+    },
+    {
+      "section": "FireRed Image Edit",
+      "folder": "diffusion_models",
+      "filename": "FireRed-Image-Edit-1.1-transformer.safetensors",
+      "url": "https://huggingface.co/FireRedTeam/FireRed-Image-Edit-1.1-ComfyUI/resolve/main/FireRed-Image-Edit-1.1-transformer.safetensors",
+      "enabled": true
+    },
+    {
+      "section": "FireRed Image Edit",
+      "folder": "text_encoders",
+      "filename": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/HunyuanVideo_1.5_repackaged/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "enabled": true
+    },
+    {
+      "section": "Shared VAE (FireRed + Anima)",
+      "folder": "vae",
+      "filename": "qwen_image_vae.safetensors",
+      "url": "https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+      "enabled": true
+    },
+
+    {
+      "section": "Upscalers",
+      "folder": "upscale_models",
+      "filename": "RealESRGAN_x4plus_anime_6B.pth",
+      "url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+      "enabled": false
+    },
+
+    {
+      "section": "Anima (Qwen-image)",
+      "folder": "diffusion_models",
+      "filename": "anima_baseV10.safetensors",
+      "url": "https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/diffusion_models/anima-base-v1.0.safetensors",
+      "enabled": false
+    },
+    {
+      "section": "Anima (Qwen-image)",
+      "folder": "text_encoders",
+      "filename": "qwen_3_06b_base.safetensors",
+      "url": "https://huggingface.co/circlestone-labs/Anima/resolve/main/split_files/text_encoders/qwen_3_06b_base.safetensors",
+      "enabled": false
+    },
+    {
+      "section": "Anima LoRA",
+      "folder": "loras",
+      "filename": "GothicNeonAnima.safetensors",
+      "url": "https://civitai.com/api/download/models/3022620?fileId=2901399",
+      "enabled": false
+    },
+
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "cyberrealistic_v90.safetensors",
+      "url": "https://civitai.com/api/download/models/2575945?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "cyberrealistic_v100.safetensors",
+      "url": "https://civitai.red/api/download/models/2840768?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "perfectionRealisticILXL_52.safetensors",
+      "url": "https://civitai.com/api/download/models/2529275?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "pornmasterZImage_v01.safetensors",
+      "url": "https://civitai.com/api/download/models/2555568?type=Model&format=SafeTensor&size=pruned&fp=fp8",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "epicrealismXL_pureFix.safetensors",
+      "url": "https://civitai.com/api/download/models/2514955?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "perfectdeliberate_v60.safetensors",
+      "url": "https://civitai.com/api/download/models/2555278?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "realisticFreedom_omegaSDXL.safetensors",
+      "url": "https://civitai.com/api/download/models/1461059?type=Model&format=SafeTensor&size=full&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "ponyRealism.safetensors",
+      "url": "https://civitai.red/api/download/models/914390?fileId=822476",
+      "enabled": false
+    },
+    {
+      "section": "Checkpoints",
+      "folder": "checkpoints",
+      "filename": "ponyRealism_stableYogi.safetensors",
+      "url": "https://civitai.red/api/download/models/2985392?fileId=2864951",
+      "enabled": false
+    },
+
+    {
+      "section": "LoRAs",
+      "folder": "loras",
+      "filename": "Threesome_Sandwich.safetensors",
+      "url": "https://civitai.com/api/download/models/347804?type=Model&format=SafeTensor",
+      "enabled": false
+    },
+    {
+      "section": "LoRAs",
+      "folder": "loras",
+      "filename": "Fefa_Mix.safetensors",
+      "url": "https://civitai.com/api/download/models/321533?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "enabled": false
+    },
+    {
+      "section": "LoRAs",
+      "folder": "loras",
+      "filename": "Micro_Bikini.safetensors",
+      "url": "https://civitai.com/api/download/models/322325?type=Model&format=SafeTensor",
+      "enabled": false
+    },
+    {
+      "section": "LoRAs",
+      "folder": "loras",
+      "filename": "Miss_Fortune_Classic_LoL.safetensors",
+      "url": "https://civitai.com/api/download/models/330380?type=Model&format=SafeTensor",
+      "enabled": false
+    }
+  ]
+}

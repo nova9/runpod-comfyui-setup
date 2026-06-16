@@ -2,7 +2,7 @@
 #
 # ComfyUI model fetcher for RunPod pods (ComfyUI is already installed).
 #
-# Prompts for API keys, then downloads every model in models.txt into the
+# Prompts for API keys, then downloads every model in models.json into the
 # right ComfyUI/models/<folder>. Re-runnable: existing files are skipped.
 #
 # Quick start on a pod:
@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-SCRIPT_VERSION="2026-06-15.5"   # bump on changes so we can confirm which copy ran
+SCRIPT_VERSION="2026-06-16.1"   # bump on changes so we can confirm which copy ran
 # DEBUG=1 turns on bash xtrace for full step-by-step output.
 [ "${DEBUG:-0}" = "1" ] && set -x
 dbg() { echo -e "\033[0;90m[debug] $*\033[0m"; }
@@ -21,9 +21,9 @@ dbg() { echo -e "\033[0;90m[debug] $*\033[0m"; }
 # Config (override with env vars, e.g. COMFYUI_DIR=/ComfyUI ./setup.sh)
 # ----------------------------------------------------------------------------
 COMFYUI_DIR="${COMFYUI_DIR:-}"          # auto-detected if empty
-MODELS_MANIFEST="${MODELS_MANIFEST:-}"  # defaults to models.txt next to this script
-# When run via `curl | bash` there's no local models.txt, so fetch it from here.
-MANIFEST_URL="${MANIFEST_URL:-https://raw.githubusercontent.com/nova9/runpod-comfyui-setup/main/models.txt}"
+MODELS_MANIFEST="${MODELS_MANIFEST:-}"  # defaults to models.json next to this script
+# When run via `curl | bash` there's no local models.json, so fetch it from here.
+MANIFEST_URL="${MANIFEST_URL:-https://raw.githubusercontent.com/nova9/runpod-comfyui-setup/main/models.json}"
 KEYS_FILE="${KEYS_FILE:-$HOME/.comfy-keys}"  # cached keys, lives OUTSIDE the repo
 
 c_blue='\033[1;34m'; c_green='\033[1;32m'; c_yellow='\033[1;33m'; c_red='\033[1;31m'; c_off='\033[0m'
@@ -65,6 +65,7 @@ ensure_downloaders() {
   local -a missing=()
   command -v aria2c >/dev/null || missing+=(aria2)
   command -v wget   >/dev/null || missing+=(wget)
+  command -v jq     >/dev/null || missing+=(jq)    # parses models.json
   [ ${#missing[@]} -eq 0 ] && return
   log "Installing ${missing[*]}"
   if command -v apt-get >/dev/null; then apt-get update -qq && apt-get install -y -qq "${missing[@]}"
@@ -102,9 +103,9 @@ load_keys() {
 # ----------------------------------------------------------------------------
 resolve_manifest() {
   [ -n "$MODELS_MANIFEST" ] && [ -f "$MODELS_MANIFEST" ] && { echo "$MODELS_MANIFEST"; return; }
-  [ -f "$SCRIPT_DIR/models.txt" ] && { echo "$SCRIPT_DIR/models.txt"; return; }
+  [ -f "$SCRIPT_DIR/models.json" ] && { echo "$SCRIPT_DIR/models.json"; return; }
   # No local manifest (running via curl|bash): fetch it from the repo.
-  local tmp="${TMPDIR:-/tmp}/comfy-models.txt"
+  local tmp="${TMPDIR:-/tmp}/comfy-models.json"
   curl -fsSL "$MANIFEST_URL" -o "$tmp" 2>/dev/null && [ -s "$tmp" ] && { echo "$tmp"; return; }
   echo ""
 }
@@ -139,21 +140,20 @@ download_one() {
   else warn "FAILED: $folder/$filename"; rm -f "$dest"; fi  # drop partial so re-run retries
 }
 
-# Strip leading/trailing whitespace without invoking xargs (which mangles
-# quotes/apostrophes, e.g. "Vixon's").
-trim() { local s="$1"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]]}"}"; printf '%s' "$s"; }
-
 download_models() {
   local manifest; manifest="$(resolve_manifest)"
-  [ -z "$manifest" ] && die "No models.txt found next to setup.sh (or set MODELS_MANIFEST)"
+  [ -z "$manifest" ] && die "No models.json found next to setup.sh (or set MODELS_MANIFEST)"
   log "Manifest: $manifest"
-  while IFS='|' read -r folder filename url || [ -n "$folder" ]; do
-    folder="$(trim "$folder")"; filename="$(trim "$filename")"; url="$(trim "$url")"
+  jq -e . "$manifest" >/dev/null 2>&1 || die "models.json is not valid JSON: $manifest"
+
+  # Emit enabled models as tab-separated folder/filename/url. Tabs can't appear
+  # in any field, so they're a safe delimiter (unlike spaces in filenames).
+  local folder filename url
+  while IFS=$'\t' read -r folder filename url; do
     [ -z "$folder" ] && continue
-    [[ "$folder" == \#* ]] && continue
-    [ -z "$url" ] && { warn "bad line (no url): $folder $filename"; continue; }
+    [ -z "$url" ] && { warn "bad entry (no url): $folder $filename"; continue; }
     download_one "$folder" "$filename" "$url"
-  done < "$manifest"
+  done < <(jq -r '.models[] | select(.enabled != false) | [.folder, .filename, .url] | @tsv' "$manifest")
   ok "All models processed"
 }
 
